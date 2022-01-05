@@ -1,0 +1,17 @@
+{
+	"name": "machine",
+	"version": "1.0.0",
+	"main": "index.js",
+	"repository": "https://github.com/Databrus-3DAA/machine.git",
+	"author": "proff001 <thommhole@gmail.com>",
+	"license": "MIT",
+	"dependencies": {
+		"body-parser": "^1.19.1",
+		"dotenv": "^10.0.0",
+		"express": "^4.17.2",
+		"nodemon": "^2.0.15"
+	},
+	"scripts": {
+		"start": "nodemon index.js"
+	}
+}
