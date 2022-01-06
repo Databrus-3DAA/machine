@@ -3,9 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "craco start",
+    "start:ui": "craco start",
     "build": "craco build",
-    "test": "craco test"
+    "test": "craco test",
+    "eject": "react-scripts eject",
+
+    "start:server": "yarn --cwd \"server\" start",
+
+    "install:all": "yarn && yarn --cwd \"server\""
   },
   "dependencies": {
     "@testing-library/jest-dom": "^5.14.1",
@@ -24,5 +29,17 @@
   "devDependencies": {
     "@craco/craco": "^6.4.3",
     "craco-esbuild": "^0.4.5"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

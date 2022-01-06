@@ -39,7 +39,7 @@ const app = express();
 // 	}
 // });
 
-app.use(express.static(path.join(__dirname,"..", "/out")));
+app.use(express.static(path.join(__dirname,"..", "/build")));
 
 
 // app.route('/').post(async (req, res) => {
