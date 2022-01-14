@@ -3,8 +3,8 @@ import style from '../styles/Menu.module.css';
 
 function Menu() {
 	return (
-		<div className={style.container}>
-			Main screen
+		<div>
+			Main menu
 		</div>
 	)
 }

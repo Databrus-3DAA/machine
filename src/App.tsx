@@ -10,12 +10,18 @@ function App() {
 
 	return (
 		<>
-			{page == 'menu' &&
-				<Menu />
-			}
-			{page == 'screensaver' &&
-				<ScreenSaver />
-			}
+			<div className='title'>
+				<h1>DATABRUS</h1>
+			</div>
+
+			<div className='container'>
+				{page == 'menu' &&
+					<Menu />
+				}
+				{page == 'screensaver' &&
+					<ScreenSaver />
+				}
+			</div>
 		</>
 	)
 }
