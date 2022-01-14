@@ -1,0 +1,19 @@
+.Container {
+    width: 480px;
+    height: 800px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    writing-mode: vertical-lr;
+    text-orientation: upright;
+    font-family: Sansation;
+    font-size:  72px;
+    animation: Puls 12s linear infinite;
+}
+
+@keyframes Puls {
+    from { opacity: 0.9; }
+    45% { opacity: 0; }
+    55% { opacity: 0; }
+    to { opacity: 0.9; }
+}

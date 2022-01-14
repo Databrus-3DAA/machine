@@ -1,45 +1,37 @@
 {
-  "name": "ui",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "start:ui": "craco start",
-    "build": "craco build",
-    "test": "craco test",
-    "eject": "react-scripts eject",
-
-    "start:server": "yarn --cwd \"server\" start",
-
-    "install:all": "yarn && yarn --cwd \"server\""
-  },
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^12.0.0",
-    "@testing-library/user-event": "^13.2.1",
-    "@types/jest": "^27.0.1",
-    "@types/node": "^16.7.13",
-    "@types/react": "^17.0.20",
-    "@types/react-dom": "^17.0.9",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-scripts": "5.0.0",
-    "typescript": "^4.4.2",
-    "web-vitals": "^2.1.0"
-  },
-  "devDependencies": {
-    "@craco/craco": "^6.4.3",
-    "craco-esbuild": "^0.4.5"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+	"name": "machine",
+	"version": "1.0.0",
+	"repository": "https://github.com/Databrus-3DAA/machine.git",
+	"author": "Databrus UB <post@databrus.as>",
+	"license": "MIT",
+	"private": true,
+	"scripts": {
+		"dev": "cross-env webpack-dev-server --config ./webpack/webpack.dev.js",
+		"build": "cross-env webpack --config ./webpack/webpack.prod.js",
+		"start": "yarn --cwd \"server\" start",
+		"install:all": "yarn && yarn --cwd \"server\""
+	},
+	"devDependencies": {
+		"@types/node": "^17.0.8",
+		"@types/react": "^17.0.38",
+		"@types/react-dom": "^17.0.11",
+		"cross-env": "^7.0.3",
+		"css-loader": "^6.5.1",
+		"esbuild-loader": "^2.18.0",
+		"html-webpack-plugin": "^5.5.0",
+		"mini-css-extract-plugin": "^2.4.5",
+		"serve": "^13.0.2",
+		"style-loader": "^3.3.1",
+		"ts-loader": "^9.2.6",
+		"typescript": "^4.5.4",
+		"webpack": "^5.65.0",
+		"webpack-cli": "^4.9.1",
+		"webpack-core": "^0.6.9",
+		"webpack-dev-server": "^4.7.2"
+	},
+	"dependencies": {
+		"axios": "^0.24.0",
+		"react": "^17.0.2",
+		"react-dom": "^17.0.2"
+	}
 }

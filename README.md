@@ -17,12 +17,12 @@ yarn install:all
 Start den delen du jobber med:
 UI:
 ```bash
-yarn start:ui
+yarn dev
 ```
 
 Server:
 ```bash
-yarn start:server
+yarn start
 ```
 
 Eller build UI-en for production deployment:

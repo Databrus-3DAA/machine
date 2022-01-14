@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+@font-face {
+	font-family: Sansation;
+	src: url(../../public/Sansation_Regular.ttf);
+}
+
+:root {
+    --darkbackground: #080808;
+    --background: #161616;
+    --subbackground: #2c2c2c;
+    --highlight: #03a062;
+    --light: #eeeeee;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    font-family: Roboto;
+    font-weight: normal;
+	font-display: optional;
+	line-height: 1.5;
+    box-sizing: border-box;
+    color: var(--light);
+    -webkit-user-drag: none;
+}
+
+body {
+	width: 480px;
+	height: 800px;
+	background: var(--background);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid var(--light);
+}
