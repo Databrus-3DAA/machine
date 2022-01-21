@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Item {
+  id        Int      @id @default(autoincrement())
+  name      String   @default("databrus") @db.VarChar(60)
+  label     String   @default("Databrus") @db.VarChar(60)
+  pos       String   @db.LongText
+  price     Int      @default(30)
+  stock     Int      @default(0)
+  machineId Int
+  machines  Machine  @relation(fields: [machineId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "machine_items_ibfk_1")
+  orders    Order[]  @relation("machine_itemsToorders")
+
+  @@index([machineId], map: "machineId")
+  @@map("machine_items")
+}
+
+model Machine {
+  id            Int    @id @default(autoincrement())
+  name          String @db.VarChar(120)
+  address       String @db.VarChar(120)
+  description   String @db.VarChar(120)
+  machine_items Item[]
+
+  @@map("machines")
+}
+
+model Order {
+  id            Int       @id @default(autoincrement())
+  state         Int       @default(0)
+  orderTime     DateTime  @default(now()) @db.DateTime(0)
+  deliverTime   DateTime? @db.DateTime(0)
+  phone         String?   @db.VarChar(8)
+  code          String    @db.VarChar(5)
+  productName   String    @db.VarChar(60)
+  productPrice  Int
+  product       Int
+  machine_items Item      @relation("machine_itemsToorders", fields: [product], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "orders_ibfk_1")
+
+  @@index([product], map: "product")
+  @@map("orders")
+}

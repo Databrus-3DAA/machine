@@ -1,5 +1,59 @@
-.container {
+.inputContainer {
+	height: 250px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.title {
+	font-family: Sansation;
+	font-size: 28px;
+	line-height: 32px;
+}
+
+.inputBox {
 	width: 400px;
-	height: 700px;
-	background: var(--subbackground);
+	height: 80px;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	background: #EEEEEE;
+	border: 3px solid var(--background);
+	box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.25);
+	border-radius: 5px;
+
+	color: var(--background);
+	font-size: 28px;
+}
+
+.buttons {
+	width: 400px;
+	height: 390px;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	grid-template-rows: repeat(4, 1fr);
+	grid-gap: 10px 20px;
+}
+
+.button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.25));
+	background: #03A062;
+	border: 2px solid var(--background);
+	border-radius: 10px;
+
+	color: var(--background);
+	font-size: 20px;
+	line-height: 23px;
+}
+
+.button:active {
+	background: #03804e;
 }

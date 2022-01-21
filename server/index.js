@@ -2,11 +2,15 @@ require('dotenv').config();
 const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
+const Prisma = require('.prisma/client/index');
 // const EventEmitter = require('events');
 // const GPIO = require('array-gpio');
 
 const app = express();
+const prisma = new Prisma.PrismaClient()
 // const event = new EventEmitter();
+
+app.use(bodyParser.json())
 
 // RPi GPIO pinout
 // https://pinout.xyz/pinout/
@@ -54,6 +58,14 @@ app.use(express.static(path.join(__dirname,"..", "/dist")));
 // 	motors.y[data.y].off();
 // 	res.json({"status":"ok"});
 // });
+
+app.route('/api/checkPhone').post(async (req, res) => {
+	const hasPhone = await prisma.order.findMany({
+		where: { phone: req.body.phone }
+	});
+
+	console.log(hasPhone);
+});
 
 app.listen(process.env.PORT, () => {
 	console.log(`Server running on port: ${process.env.PORT}`);
