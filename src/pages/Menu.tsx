@@ -5,7 +5,7 @@ import { useIdentifiers, usePage } from '../contexts/GlobalContext';
 const buttonLabels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 'Neste', '0', 'remove'];
 
 function Menu() {
-	const { page, setPage } = usePage();
+	const { setPage } = usePage();
 	const { number, setNumber, code, setCode } = useIdentifiers();
 
 	const onClick = async (key: string | number) => {
@@ -18,20 +18,20 @@ function Menu() {
 				element.innerHTML = element.innerHTML.slice(0, -1);
 				break;
 			case 'Neste':
+				if(element.innerHTML.length != 10) break;
+
 				const data =  JSON.stringify({
 					phone: Number(element.innerHTML.replace(/\s+/g, ""))
 				})
 
-				console.log(data);
-
-				await fetch(`http://127.0.0.1:42069/api/checkPhone`, {
+				const res = await fetch(`http://127.0.0.1:42069/api/checkPhone`, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: data, 
-				})
-					// .then(res => res.json());
-				if(element.innerHTML.length != 10) break;
-				setNumber(Number(element.innerHTML.replace(/\s+/g, "")));
+				});
+
+				if(!res.bodyUsed) break;
+				// setNumber(Number(element.innerHTML.replace(/\s+/g, "")));
 				break;
 			default:
 				if(element.innerHTML.length >= 10) return;

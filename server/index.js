@@ -1,14 +1,16 @@
-require('dotenv').config();
-const express = require("express");
-const path = require("path");
-const bodyParser = require("body-parser");
-const Prisma = require('.prisma/client/index');
+import 'dotenv/config';
+import path from 'path';
+import express from 'express';
+import Prisma from '@prisma/client';
+import bodyParser from 'body-parser';
+
 // const EventEmitter = require('events');
 // const GPIO = require('array-gpio');
 
 const app = express();
-const prisma = new Prisma.PrismaClient()
+const prisma = new Prisma.PrismaClient();
 // const event = new EventEmitter();
+
 
 app.use(bodyParser.json())
 
@@ -43,7 +45,7 @@ app.use(bodyParser.json())
 // 	}
 // });
 
-app.use(express.static(path.join(__dirname,"..", "/dist")));
+app.use(express.static(path.join("..", "/dist")));
 
 
 // app.route('/').post(async (req, res) => {
@@ -60,11 +62,8 @@ app.use(express.static(path.join(__dirname,"..", "/dist")));
 // });
 
 app.route('/api/checkPhone').post(async (req, res) => {
-	const hasPhone = await prisma.order.findMany({
-		where: { phone: req.body.phone }
-	});
-
-	console.log(hasPhone);
+	console.log((await prisma.order.findFirst({ where: { phone: req.body.phone.toString(), state: 0 }})) != null)
+	res.send((await prisma.order.findFirst({ where: { phone: req.body.phone.toString(), state: 0 }})) != null);
 });
 
 app.listen(process.env.PORT, () => {

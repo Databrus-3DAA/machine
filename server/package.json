@@ -5,6 +5,7 @@
 	"repository": "https://github.com/Databrus-3DAA/machine.git",
 	"author": "proff001 <thommhole@gmail.com>",
 	"license": "MIT",
+	"type": "module",
 	"dependencies": {
 		"@prisma/client": "^3.8.1",
 		"body-parser": "^1.19.1",
