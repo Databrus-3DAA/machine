@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import style from '../styles/Menu.module.css';
 import { useIdentifiers, usePage } from '../contexts/GlobalContext';
 
@@ -7,9 +7,11 @@ const buttonLabels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 'Neste', '0', 'remove'];
 function Menu() {
 	const { setPage } = usePage();
 	const { number, setNumber, code, setCode } = useIdentifiers();
+	const [error, setError] = useState<string | null>(null);
 
 	const onClick = async (key: string | number) => {
-		const element = document.getElementById(number == 0 ? 'phone' : 'code')!;
+		const phone = number == 0;
+		const element = document.getElementById(phone ? 'phone' : 'code')!;
 
 		switch(key) {
 			case 'remove':
@@ -18,7 +20,7 @@ function Menu() {
 				element.innerHTML = element.innerHTML.slice(0, -1);
 				break;
 			case 'Neste':
-				if(element.innerHTML.length != 10) break;
+				if(element.innerHTML.length != 10) return setError('* Telefonnummeret er ikke 8 siffere');
 
 				const data =  JSON.stringify({
 					phone: Number(element.innerHTML.replace(/\s+/g, ""))
@@ -30,8 +32,8 @@ function Menu() {
 					body: data, 
 				});
 
-				if(!res.bodyUsed) break;
-				// setNumber(Number(element.innerHTML.replace(/\s+/g, "")));
+				if(!res.bodyUsed) return setError('* Ingen ordre registret på dette telefonnummeret');
+				setNumber(Number(element.innerHTML.replace(/\s+/g, "")));
 				break;
 			default:
 				if(element.innerHTML.length >= 10) return;
@@ -55,6 +57,10 @@ function Menu() {
 						<div className={style.inputBox} id="code"></div>
 					</>
 				}
+
+				{error != null && (
+					<div style={{color: 'red'}}>{error}</div>
+				)}
 			</div>
 
 			<div className={style.buttons}>
