@@ -58,6 +58,10 @@ body {
 }
 
 .container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
 	width: 440px;
 	height: 680px;
 	background: var(--subbackground);

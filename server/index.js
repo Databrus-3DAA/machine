@@ -3,14 +3,12 @@ import path from 'path';
 import express from 'express';
 import Prisma from '@prisma/client';
 import bodyParser from 'body-parser';
-
-// const EventEmitter = require('events');
+import EventEmitter from 'events';
 // const GPIO = require('array-gpio');
 
 const app = express();
 const prisma = new Prisma.PrismaClient();
-// const event = new EventEmitter();
-
+const event = new EventEmitter();
 
 app.use(bodyParser.json())
 
@@ -61,11 +59,16 @@ app.use(express.static(path.join("..", "/dist")));
 // 	res.json({"status":"ok"});
 // });
 
-app.route('/api/checkPhone').post(async (req, res) => {
-	console.log((await prisma.order.findFirst({ where: { phone: req.body.phone.toString(), state: 0 }})) != null)
-	res.send((await prisma.order.findFirst({ where: { phone: req.body.phone.toString(), state: 0 }})) != null);
+app.route('/api/checkInput').post(async ({ body: { phone, code } }, res) => {
+	const data = await prisma.order.findFirst({ where: { phone, code, state: 0 }})
+
+	res.send(JSON.stringify({
+		validInput: data != null
+	}));
+
+	console.log(data);
 });
 
-app.listen(process.env.PORT, () => {
-	console.log(`Server running on port: ${process.env.PORT}`);
+app.listen(42069, () => {
+	console.log(`Server running on port: 42069`);
 });
