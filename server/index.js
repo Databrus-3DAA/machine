@@ -60,13 +60,18 @@ app.use(express.static(path.join("..", "/dist")));
 // });
 
 app.route('/api/checkInput').post(async ({ body: { phone, code } }, res) => {
-	const data = await prisma.order.findFirst({ where: { phone, code, state: 0 }})
-
-	res.send(JSON.stringify({
-		validInput: data != null
-	}));
+	const data = await prisma.order.findFirst({
+		where: { phone, code, state: 0 },
+		include: { machine_items: true }
+	});
 
 	console.log(data);
+	res.send(JSON.stringify({ validInput: data != null }));
+	if(data == null) return;
+
+	const {x, y} = JSON.parse(data.machine_items.pos);
+	console.log(x, y);
+
 });
 
 app.listen(42069, () => {
