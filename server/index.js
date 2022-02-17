@@ -4,7 +4,7 @@ import express from 'express';
 import Prisma from '@prisma/client';
 import bodyParser from 'body-parser';
 import EventEmitter from 'events';
-// const GPIO = require('array-gpio');
+import { Gpio } from 'onoff';
 
 const app = express();
 const prisma = new Prisma.PrismaClient();
