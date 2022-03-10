@@ -43,6 +43,8 @@ app.use(bodyParser.json())
 // 	}
 // });
 
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 app.use(express.static(path.join("..", "/dist")));
 
 

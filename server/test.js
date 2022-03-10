@@ -1,50 +1,46 @@
-import EventEmitter from 'events';
-import { Gpio } from 'onoff';
+import { init } from 'raspi';
+import { DigitalInput, DigitalOutput, PULL_DOWN, HIGH, LOW } from 'raspi-gpio';
 
-const event = new EventEmitter();
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-const test = ['a', 0];
+init(() => {
+	const pulse = new DigitalInput({
+		pin: 'P1-7',
+		pullResistor: PULL_DOWN
+	});
 
-// RPi GPIO pinout
-// https://pinout.xyz/pinout/
-let pulse = new Gpio(7, 'in');
-let motors = {
-	x: [
-		new Gpio(22, 'out'),
-		new Gpio(24, 'out'),
-		new Gpio(26, 'out'),
-		new Gpio(28, 'out'),
-		new Gpio(32, 'out'),
-		new Gpio(36, 'out'),
-		new Gpio(38, 'out'),
-		new Gpio(40, 'out'),
-	],
-	
-	y: {
-		a: new Gpio(37, 'out'),
-		b: new Gpio(35, 'out'),
-		c: new Gpio(33, 'out'),
-		d: new Gpio(31, 'out'),
-		e: new Gpio(29, 'out'),
-		f: new Gpio(27, 'out'),
+	const motors = {
+		x: [
+			new DigitalOutput('P1-22'),
+			new DigitalOutput('P1-24'),
+			new DigitalOutput('P1-26'),
+			new DigitalOutput('P1-28'),
+			new DigitalOutput('P1-32'),
+			new DigitalOutput('P1-36'),
+			new DigitalOutput('P1-38'),
+			new DigitalOutput('P1-40'),
+		],
+
+		y: {
+			a: new DigitalOutput('P1-27'),
+			b: new DigitalOutput('P1-29'),
+			c: new DigitalOutput('P1-31'),
+			d: new DigitalOutput('P1-33'),
+			e: new DigitalOutput('P1-35'),
+			f: new DigitalOutput('P1-37'),
+		}
 	}
-};
 
-pulse.watch((err, value) => {
-	if(err) throw err;
-	console.log(value);
-	// if(value) event.emit('pulse');
-});
+	pulse.on('change', (value) => {
+		console.log('Pulse change:', value);
+	});
 
-(async () => {
-	motors.y[test[0]].writeSync(1);
-	motors.x[test[1]].writeSync(1);
-	await new Promise(res => event.once('pulse', res));
-	motors.x[test[1]].writeSync(0);
-	motors.y[test[0]].writeSync(0);
-});
-
-process.on('SIGINT', _ => {
-	motors.x.forEach(m => m.unexport());
-	Object.keys(motors.y).forEach(m => motors.y[m].unexport());
+	(async () => {
+		await delay(1000);
+		motors.x[0].write(HIGH);
+		motors.y.a.write(HIGH);
+		await delay(1000);
+		motors.y.a.write(LOW);
+		motors.x[0].write(LOW);
+	})();
 });
