@@ -15,7 +15,7 @@ function App() {
 		switch(key) {
 			case 'remove':
 				if(element.innerHTML.length <= 0) return;
-				if((number && (element.innerHTML.length == 4 || element.innerHTML.length == 7))) element.innerHTML = element.innerHTML.slice(0, -1);
+				if((!number && (element.innerHTML.length == 4 || element.innerHTML.length == 7))) element.innerHTML = element.innerHTML.slice(0, -1);
 				element.innerHTML = element.innerHTML.slice(0, -1);
 				break;
 			case 'Neste':
