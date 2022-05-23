@@ -8,32 +8,33 @@ datasource db {
 }
 
 model Item {
-  id        Int      @id @default(autoincrement())
-  name      String   @default("databrus") @db.VarChar(60)
-  label     String   @default("Databrus") @db.VarChar(60)
-  pos       String   @db.LongText
-  price     Int      @default(30)
-  stock     Int      @default(0)
+  id        Int     @id @default(autoincrement())
+  name      String  @default("databrus") @db.VarChar(60)
+  label     String  @default("Databrus") @db.VarChar(60)
+  pos       String  @db.LongText
+  price     Float   @default(30)
+  stock     Int     @default(0)
   machineId Int
-  machines  Machine  @relation(fields: [machineId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "machine_items_ibfk_1")
-  orders    Order[]  @relation("machine_itemsToorders")
+  machines  Machine @relation(fields: [machineId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "machine_items_ibfk_1")
+  orders    Order[] @relation("machine_itemsToorders")
 
   @@index([machineId], map: "machineId")
   @@map("machine_items")
 }
 
 model Machine {
-  id            Int    @id @default(autoincrement())
-  name          String @db.VarChar(120)
-  address       String @db.VarChar(120)
-  description   String @db.VarChar(120)
+  id            Int     @id @default(autoincrement())
+  name          String  @db.VarChar(120)
+  address       String  @db.VarChar(120)
+  description   String  @db.VarChar(120)
+  temperature   Decimal @default(10.0) @db.Decimal(3, 1)
   machine_items Item[]
 
   @@map("machines")
 }
 
 model Order {
-  id            Int       @id @default(autoincrement())
+  id            String    @id @default("232355-databrus-000000") @db.VarChar(22)
   state         Int       @default(0)
   orderTime     DateTime  @default(now()) @db.DateTime(0)
   deliverTime   DateTime? @db.DateTime(0)

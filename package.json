@@ -9,8 +9,10 @@
 		"serve": "webpack serve --config ./webpack/webpack.dev.js",
 		"build": "webpack --config ./webpack/webpack.prod.js",
 		"watch": "webpack --config ./webpack/webpack.dev.js --watch",
+
 		"prisma": "yarn --cwd \"server\" prisma generate",
 		"start": "yarn --cwd \"server\" start",
+
 		"install:all": "yarn && yarn --cwd \"server\""
 	},
 	"devDependencies": {

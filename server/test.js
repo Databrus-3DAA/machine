@@ -36,6 +36,9 @@ init(() => {
 	});
 
 	(async () => {
+		motors.x.forEach(m => m.write(LOW));
+		Object.keys(motors.y).forEach(m => motors.y[m].write(LOW));
+
 		await delay(1000);
 		motors.x[0].write(HIGH);
 		motors.y.a.write(HIGH);

@@ -1,81 +1,121 @@
-import 'dotenv/config';
 import path from 'path';
 import express from 'express';
 import Prisma from '@prisma/client';
 import bodyParser from 'body-parser';
 import EventEmitter from 'events';
-import { Gpio } from 'onoff';
 
+import { init } from 'raspi';
+import { DigitalInput, DigitalOutput, PULL_DOWN, HIGH, LOW } from 'raspi-gpio';
+
+/*
+	Lager en ny express aplication som hoster UI-en lokalt og API-en,
+	en ny prisma client som kobler til databasen og håndterer all database kommunikasjon, 
+	og en ny event emitter som brukes til å stoppe motorene når den ene pinen blir high.
+*/
 const app = express();
 const prisma = new Prisma.PrismaClient();
 const event = new EventEmitter();
 
+/*
+	Ved at express serveren bruker bodyParser så slipper vi å parse bodyen til en json
+	objekt når vi skal håndtere API-en.
+*/
 app.use(bodyParser.json())
 
-// RPi GPIO pinout
-// https://pinout.xyz/pinout/
-// let pulse = GPIO.in(7);
-// let motors = {
-// 	x: [
-// 		GPIO.out(22),
-// 		GPIO.out(24),
-// 		GPIO.out(26),
-// 		GPIO.out(28),
-// 		GPIO.out(32),
-// 		GPIO.out(36),
-// 		GPIO.out(38),
-// 		GPIO.out(40),
-// 	],
-
-// 	y: {
-// 		a: GPIO.out(27),
-// 		b: GPIO.out(29),
-// 		c: GPIO.out(31),
-// 		d: GPIO.out(33),
-// 		e: GPIO.out(35),
-// 		f: GPIO.out(37),
-// 	}
-// };
-
-// pulse.watch(state => {
-// 	if(state) {
-// 		event.emit('pulse');
-// 	}
-// });
-
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
+/*
+	Lager en ny express route for alle statiske filler altså bygget versjonen av UI-en.
+*/
 app.use(express.static(path.join("..", "/dist")));
 
+/*
+	init funksjonen fra raspi biblioteket kjøres når GPIO pinene er klare til bruk.
+	Hadde vi ikke hatt logikken som brukers pinene utenfor hadde vi bare fått problemmer.
+*/
+init(() => {
+	// RPi GPIO pinout
+	// https://pinout.xyz/pinout/
 
-// app.route('/').post(async (req, res) => {
-// 	let data = req.body;
-			
-// 	if(!data.x || !data.y) return res.json({"status":"error", "msg":"Missing X or Y variables!"});
-
-// 	motors.y[data.y].on();
-// 	motors.x[data.x].on();
-// 	await new Promise(res => event.once('pulse', res));
-// 	motors.x[data.x].off();
-// 	motors.y[data.y].off();
-// 	res.json({"status":"ok"});
-// });
-
-app.route('/api/checkInput').post(async ({ body: { phone, code } }, res) => {
-	const data = await prisma.order.findFirst({
-		where: { phone, code, state: 0 },
-		include: { machine_items: true }
+	// Setter opp GPIO pinen for avbrytning av motoren.
+	const pulse = new DigitalInput({
+		pin: 'P1-7',
+		pullResistor: PULL_DOWN
 	});
 
-	console.log(data);
-	res.send(JSON.stringify({ validInput: data != null }));
-	if(data == null) return;
+	// Setter opp GPIO pinen for alle motorene som en X og Y akse i en 2 Dimensjonal array.
+	const motors = {
+		x: [
+			new DigitalOutput('P1-22'),
+			new DigitalOutput('P1-24'),
+			new DigitalOutput('P1-26'),
+			new DigitalOutput('P1-28'),
+			new DigitalOutput('P1-32'),
+			new DigitalOutput('P1-36'),
+			new DigitalOutput('P1-38'),
+			new DigitalOutput('P1-40'),
+		],
 
-	const {x, y} = JSON.parse(data.machine_items.pos);
-	console.log(x, y);
+		y: {
+			a: new DigitalOutput('P1-27'),
+			b: new DigitalOutput('P1-29'),
+			c: new DigitalOutput('P1-31'),
+			d: new DigitalOutput('P1-33'),
+			e: new DigitalOutput('P1-35'),
+			f: new DigitalOutput('P1-37'),
+		}
+	}
 
-});
+	// Legger til logikk som kjøres når avbrytnings pinen blir high.
+	pulse.on('change', (value) => {
+		console.log('Pulse change:', value);
+		if(value) event.emit('pulse');
+	});
 
-app.listen(42069, () => {
-	console.log(`Server running on port: 42069`);
+	// Setter alle motorene til LOW.
+	motors.x.forEach(m => m.write(LOW));
+	Object.keys(motors.y).forEach(m => motors.y[m].write(LOW));
+
+	// Setter opp en rout som tar imot en post request fra UI-en (fungerer som en API).
+	app.route('/api/checkInput').post(async ({ body: { phone, code } }, res) => {
+		/*
+			Henter orderen fra databasen med produkt informasjon hvor koden og telefonnummeret
+			matcher og statusen på orderen 0 altså ikke hentet som er 1, refundert som er 2
+			eller avbrut/kanselert som er 3.
+		*/
+		const data = await prisma.order.findFirst({
+			where: { phone, code, state: 0 },
+			include: { machine_items: true }
+		});
+
+		console.log(data);
+		
+		/*
+			Hvis orderen ikke finnes eller er refundert eller avbrutt/kanselert så vil UI-en få en
+			false tilbake og koden vil stoppe med returnen eller så får UI-en en true og resten av
+			koden vil kjøre.
+		*/
+		res.send(JSON.stringify({ validInput: data != null }));
+		if(data == null) return;
+
+		/*
+			Siden posisjonen til produktet i maskinen er en stringified array, så må vi parse den
+			fra string til array.
+		*/
+		const {x, y} = JSON.parse(data.machine_items.pos);
+		console.log(x, y);
+
+		/*
+			Etter å ha skaffet posisjonen til produktet i maskinen, så starter vi motorene og
+			ventet på eventen for å stoppe motorene.
+		*/
+		motors.x[x].write(HIGH);
+		motors.y[y].write(HIGH);
+		await new Promise(res => event.once('pulse', res));
+		motors.y[y].write(LOW);
+		motors.x[x].write(LOW);
+	});
+
+	// Starte serveren på port 42069.
+	app.listen(42069, () => {
+		console.log(`Server running on port: 42069`);
+	});
 });

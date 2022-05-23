@@ -63,11 +63,11 @@ function App() {
 
 	return (
 		<>
-			<div className='title'>
+			<div className={style.title}>
 				<h1>DATABRUS UB</h1>
 			</div>
 
-			<div className='container'>
+			<div className={style.container}>
 				{(!number || !code) && (
 					<>
 						{(number && !code) &&
@@ -80,14 +80,14 @@ function App() {
 						<div className={style.inputContainer}>
 							{(!number && !code) &&
 								<>
-									<div className={style.title}>Telefonnummer</div>
+									<div className={style.subtitle}>Telefonnummer</div>
 									<div className={style.inputBox} id="phone"></div>
 								</>
 							}
 
 							{(number && !code) &&
 								<>
-									<div className={style.title}>Kode</div>
+									<div className={style.subtitle}>Kode</div>
 									<div className={style.inputBox} id="code" style={{ letterSpacing: '5px' }}></div>
 								</>
 							}
