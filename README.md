@@ -25,7 +25,7 @@ yarn install:all
 ```
 
 # Start / build prosjektet
-For å starte UI-en for testing (åpne http://127.0.0.1:42069):
+For å starte UI-en for testing (http://127.0.0.1:42069, localhost (http://localhost) vil ikke funke med API-en på grunn av cors):
 ```bash
 yarn dev
 ```
