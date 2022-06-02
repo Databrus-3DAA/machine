@@ -37,7 +37,9 @@ app.use(express.static(path.join("..", "/dist")));
  */
 init(() => {
 	// Lager en ny Serial objekt som kobler til en serielle porten på Raspberry Pi-en.
-	const serial = new Serial();
+	const serial = new Serial({
+		portId: '/dev/ttyAMC0'
+	});
 
 	/**
 	 * RPi GPIO pinout
