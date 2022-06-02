@@ -4,8 +4,12 @@ import Prisma from '@prisma/client';
 import bodyParser from 'body-parser';
 import EventEmitter from 'events';
 
+// https://github.com/nebrius/raspi
 import { init } from 'raspi';
+// https://github.com/nebrius/raspi-gpio
 import { DigitalInput, DigitalOutput, PULL_DOWN, HIGH, LOW } from 'raspi-gpio';
+// https://github.com/nebrius/raspi-serial
+import { Serial } from 'raspi-serial';
 
 /**
  * Lager en ny express aplication som hoster UI-en lokalt og API-en,
@@ -32,6 +36,9 @@ app.use(express.static(path.join("..", "/dist")));
  * Hadde vi ikke hatt logikken som brukers pinene utenfor hadde vi bare fått problemmer.
  */
 init(() => {
+	// Lager en ny Serial objekt som kobler til en serielle porten på Raspberry Pi-en.
+	const serial = new Serial();
+
 	/**
 	 * RPi GPIO pinout
 	 * https://pinout.xyz/pinout/
@@ -120,5 +127,14 @@ init(() => {
 	// Starte serveren på port 42069.
 	app.listen(42069, () => {
 		console.log(`Server running on port: 42069`);
+	});
+
+	// Test serial greier
+	serial.open(() => {
+		console.log('Serial port opened');
+		serial.on('data', (data) => {
+			console.log(data);
+			process.stdout.write(data);
+		});
 	});
 });

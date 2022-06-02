@@ -13,7 +13,7 @@
 		"prisma": "yarn --cwd \"server\" prisma generate",
 		"start": "yarn --cwd \"server\" start",
 
-		"install:all": "yarn && yarn --cwd \"server\""
+		"install:server": "yarn --cwd \"server\""
 	},
 	"devDependencies": {
 		"@types/node": "^17.0.8",

@@ -14,9 +14,14 @@ For å laste ned yarn må du ha [Node.js](https://nodejs.org) (installeres globa
 npm i yarn -g
 ```
 
-Installer packagene som prosjektet bruker:
+Installer packagene som UI-en bruker:
 ```bash
-yarn install:all
+yarn
+```
+
+Installer packagene som serveren bruker (de 3 raspi packagene vil ikke installeres på noe annet en Raspberry Pi-en):
+```bash
+yarn install:server
 ```
 
 Generer prisma types:
